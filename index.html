@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BugForge – Issue Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#050206;--panel:#12060d;--panel2:#1b0a14;--maroon:#6b0f2f;--maroon2:#2e0816;--pink:#ff2d95;--pink2:#ff7ac6;--tx:#f8ebf2;--mut:#a98a9b;--line:#3a1226;--ok:#35f2a0;--warn:#ffb020;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(900px 500px at 85% -10%,#4a0b24 0,transparent 60%),radial-gradient(700px 500px at -10% 110%,#3a0a1f 0,transparent 55%),var(--bg);color:var(--tx);font:14px/1.5 Inter,system-ui,sans-serif;min-height:100vh}
+h1,h2,h3,.logo{font-family:Sora,Inter,sans-serif;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+.mut,small{color:var(--mut)}
+.desk{position:fixed;inset:0;overflow:hidden;background:linear-gradient(rgba(255,45,149,.06) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,rgba(255,45,149,.06) 1px,transparent 1px) 0 0/44px 44px,radial-gradient(900px 600px at 80% 0,#4a0b24 0,transparent 60%),radial-gradient(700px 500px at 0 100%,#3a0a1f 0,transparent 55%),var(--bg)}
+.mbar{position:absolute;top:0;left:0;right:0;height:30px;display:flex;gap:16px;align-items:center;padding:0 14px;background:rgba(8,2,6,.92);border-bottom:1px solid var(--line);font-size:12px;color:var(--mut);z-index:5}
+.win{position:absolute;left:2.5vw;top:42px;width:95vw;height:calc(100vh - 106px);background:var(--bg);border:1px solid var(--maroon);border-radius:10px;box-shadow:0 24px 70px #000,0 0 34px rgba(255,45,149,.16);display:flex;flex-direction:column;overflow:hidden}
+.win[hidden]{display:none}.win.mx{left:0;top:30px;width:100vw;height:calc(100vh - 94px);border-radius:0}
+.tb{height:36px;flex:none;display:flex;align-items:center;gap:12px;padding:0 12px;background:linear-gradient(180deg,#2c0c1b,#160610);border-bottom:1px solid var(--line);cursor:move;user-select:none;touch-action:none}
+.dots{display:flex;gap:7px;width:56px}.dots i{width:12px;height:12px;border-radius:50%;background:#444;cursor:pointer}.dots .r{background:#ff2d55}.dots .y{background:#ffb020}.dots .g{background:#35f2a0}
+.md .dots .y,.md .dots .g,.ac .dots i{opacity:.3;cursor:default}
+.ttl{flex:1;text-align:center;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tb .ttl{margin-right:56px}
+.md>.tb{margin:0 -22px 16px}.ac>.tb{margin:0 -28px 18px}
+.sb{flex:none;height:26px;display:flex;justify-content:space-between;align-items:center;padding:0 14px;background:#0a0307;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}
+.dock{position:absolute;left:50%;transform:translateX(-50%);bottom:10px;display:flex;gap:8px;padding:6px;background:rgba(18,6,13,.92);border:1px solid var(--line);border-radius:14px}
+.dk{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 14px}.dk.on{border-color:var(--pink);box-shadow:0 0 14px rgba(255,45,149,.35)}
+.shell{display:flex;flex:1;min-height:0}
+aside{width:250px;flex:none;background:linear-gradient(180deg,var(--panel),#09030a);border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:6px;overflow:auto}
+.logo{font-size:20px;font-weight:700;letter-spacing:.5px;padding:4px 8px 16px;color:#fff}
+.logo span{color:var(--pink);text-shadow:0 0 14px var(--pink)}
+.nv,.pj{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;padding:9px 12px;color:var(--mut)}
+.nv:hover,.pj:hover{background:var(--panel2);color:var(--tx)}
+.nv.on,.pj.on{background:linear-gradient(90deg,var(--maroon),var(--maroon2));color:#fff;border-color:var(--pink);box-shadow:0 0 16px rgba(255,45,149,.3)}
+.sec{display:flex;justify-content:space-between;align-items:center;margin:16px 8px 4px;color:var(--mut);font-size:12px}
+.pj b{color:var(--pink2);font-family:Sora;font-size:12px}
+.mini{background:var(--maroon2);border:1px solid var(--line);border-radius:8px;width:28px;height:28px;color:var(--pink2)}
+.mini:hover{border-color:var(--pink)}
+.me{margin-top:auto;display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}
+.me div:nth-child(2){flex:1;display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--maroon));display:grid;place-items:center;font-size:11px;font-weight:700;flex:none;color:#fff}
+main{flex:1;min-width:0;padding:22px 26px;overflow:auto}
+header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;margin-bottom:18px}
+header h1{font-size:26px}
+header p{margin:2px 0 0;color:var(--mut)}
+.btn{background:linear-gradient(135deg,var(--pink),#b10f5d);border:0;border-radius:10px;padding:9px 16px;font-weight:600;color:#fff;box-shadow:0 0 18px rgba(255,45,149,.45)}
+.btn:hover{filter:brightness(1.15)}
+.btn.ghost{background:transparent;border:1px solid var(--line);box-shadow:none;color:var(--tx)}
+.btn.ghost:hover{border-color:var(--pink)}
+.btn.danger{background:#8a0f2a;box-shadow:none}
+.card{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.stat b{display:block;font:700 30px Sora;color:var(--pink2);text-shadow:0 0 16px rgba(255,45,149,.5)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.bar{display:flex;align-items:center;gap:10px;margin:10px 0}.bar i{display:block;height:8px;border-radius:6px;background:linear-gradient(90deg,var(--maroon),var(--pink));box-shadow:0 0 10px rgba(255,45,149,.5)}.bar span{width:70px}
+.fb{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+input,select,textarea{background:#0b0409;border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
+.fb input{flex:1 1 200px;width:auto}.fb select{width:auto;flex:0 1 150px}
+input:focus,select:focus,textarea:focus{border-color:var(--pink);outline:none;box-shadow:0 0 0 3px rgba(255,45,149,.2)}
+.board{display:grid;grid-template-columns:repeat(3,minmax(250px,1fr));gap:14px;overflow-x:auto;padding-bottom:8px}
+.col{background:rgba(18,6,13,.7);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:300px}
+.col.over{border-color:var(--pink);box-shadow:0 0 22px rgba(255,45,149,.35)}
+.col h3{font-size:14px;display:flex;justify-content:space-between;margin-bottom:10px}
+.col h3 em{font-style:normal;background:var(--maroon2);border-radius:20px;padding:0 9px;color:var(--pink2)}
+.tk{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--pink);border-radius:10px;padding:11px;margin-bottom:10px;cursor:grab}
+.tk:hover{border-color:var(--pink)}
+.tk.High{border-left-color:var(--warn)}.tk.Low{border-left-color:#7a5a6b}.tk.Critical{border-left-color:#ff2d55;box-shadow:0 0 14px rgba(255,45,85,.25)}
+.tk p{margin:4px 0 8px;font-weight:500}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.tag{font-size:11px;border:1px solid var(--line);border-radius:20px;padding:1px 9px;color:var(--pink2);background:var(--maroon2)}
+.tag.Critical{color:#fff;background:#8a0f2a}.tag.High{color:var(--warn)}
+.mv{background:none;border:1px solid var(--line);border-radius:6px;color:var(--mut);width:24px;height:24px;padding:0}
+.mv:hover{color:var(--pink);border-color:var(--pink)}
+.tbl{width:100%;border-collapse:collapse}.tbl td,.tbl th{text-align:left;padding:10px;border-bottom:1px solid var(--line)}.tbl th{color:var(--mut);font-weight:500}.tbl tr[data-act]{cursor:pointer}.tbl tr[data-act]:hover{background:var(--panel2)}
+.wrap{overflow-x:auto}
+.ov{position:fixed;inset:0;display:grid;place-items:center;padding:16px;z-index:20;pointer-events:none}
+.md{width:100%;max-width:640px;background:linear-gradient(160deg,#1d0a15,#0c0409);border:1px solid var(--pink);border-radius:10px;padding:0 22px 22px;box-shadow:0 30px 80px #000,0 0 34px rgba(255,45,149,.3);max-height:90vh;overflow:auto;pointer-events:auto}
+.md h2{margin-bottom:14px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.f{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}.f label{color:var(--mut);font-size:12px}
+.acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+.cm{border-left:2px solid var(--maroon);padding:4px 10px;margin:8px 0;background:var(--panel)}
+.auth{height:100%;overflow:auto;display:grid;place-items:center;padding:48px 18px 18px}
+.ac{width:100%;max-width:410px;padding:0 28px 28px;border:1px solid var(--pink);border-radius:10px;overflow:hidden;background:linear-gradient(160deg,#1d0a15,#09030a);box-shadow:0 0 60px rgba(255,45,149,.28)}
+.tabs{display:flex;background:#0b0409;border-radius:10px;padding:3px;margin:16px 0}.tabs button{flex:1;border:0;background:none;padding:8px;border-radius:8px;color:var(--mut)}.tabs .on{background:var(--maroon);color:#fff}
+.demo{display:flex;gap:6px;margin-top:14px}.demo button{flex:1;font-size:12px;padding:7px}
+.err{color:#ff6b8f;min-height:18px;font-size:13px}
+.toast{position:fixed;bottom:calc(66px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--maroon);border:1px solid var(--pink);padding:10px 18px;border-radius:12px;z-index:50;box-shadow:0 0 20px rgba(255,45,149,.4)}
+.shot{max-width:100%;max-height:160px;border-radius:8px;border:1px solid var(--line);margin-top:6px}
+.empty{text-align:center;padding:40px;color:var(--mut)}
+@media(max-width:820px){.shell{flex-direction:column}aside{width:100%;height:auto;position:static;border-right:0;border-bottom:1px solid var(--line)}main{padding:16px}.win{left:0;top:30px;width:100vw;height:calc(100vh - 94px);border-radius:0}aside{max-height:34vh}.tb{cursor:default}.g{grid-template-columns:1fr}.board{grid-template-columns:repeat(3,82vw)}}
+
+/* ===== White & gold interior ===== */
+:root{color-scheme:light;--bg:#f7f2e8;--panel:#fffdf8;--panel2:#fbf6ea;--maroon:#ecdfc0;--maroon2:#f4ebd7;--pink:#b8892b;--pink2:#8a6414;--gold:#c9a043;--ink:#14100a;--tx:#2b2218;--mut:#7a6b57;--line:#e3d6b9;--warn:#b86e00;--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .6 0 0 0 0 .5 0 0 0 0 .3 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+*{scrollbar-color:#c9a043 #f4ebd7}:focus-visible{outline:2px solid var(--gold)}
+body{background:#0c0a07}
+h1,h2,h3,.logo{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700}h3{font-size:20px}
+.desk{background:linear-gradient(rgba(201,160,67,.07) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,rgba(201,160,67,.07) 1px,transparent 1px) 0 0/44px 44px,radial-gradient(800px 500px at 80% 0,#3a2a0c 0,transparent 60%),#0c0a07}
+.mbar{background:#0a0805;border-bottom:1px solid #3a2d12;color:#b9a67a}
+.win{background:var(--noise),var(--bg);border:1px solid var(--gold);box-shadow:0 24px 70px #000,0 0 0 4px #14100a,0 0 0 5px rgba(201,160,67,.55)}
+.tb{background:linear-gradient(180deg,#1d1710,#0e0b07);border-bottom:1px solid var(--gold)}
+.ttl{color:#d8c28a;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;letter-spacing:.08em}
+.dots .r{background:#c4453f}.dots .y{background:#d9b44f}.dots .g{background:#6fae7c}
+aside{background:linear-gradient(180deg,#fffdf8,#f5ecd7);border-right:1px solid var(--gold);box-shadow:inset -3px 0 0 #fff,inset -4px 0 0 rgba(201,160,67,.3)}
+.logo{color:var(--ink);font-size:22px;letter-spacing:.16em;text-transform:uppercase;border-bottom:1px solid var(--line);margin-bottom:8px}.logo span{color:var(--gold);text-shadow:none}
+.nv:hover,.pj:hover{background:var(--maroon2);color:var(--ink)}
+.nv.on,.pj.on{background:linear-gradient(90deg,#f1e2b8,#faf3df);color:var(--ink);border-color:var(--gold);box-shadow:inset 3px 0 0 var(--gold)}
+.sec{text-transform:uppercase;letter-spacing:.16em;font-size:10px}
+.mini{background:#fff;border:1px solid var(--gold);color:var(--pink2)}
+.me{background:#fff;border:1px solid var(--line)}
+.av{background:linear-gradient(135deg,#e2bd5c,#a8791f);color:#2a1c05}
+header{border-bottom:1px solid var(--line);padding-bottom:14px;position:relative}header::after{content:"";position:absolute;left:0;bottom:-1px;width:96px;height:3px;background:var(--gold)}
+header h1{font-size:36px;color:var(--ink);line-height:1.1}
+.btn{background:linear-gradient(180deg,#e6c367,#b8892b);color:#2a1c05;border:1px solid #9c7218;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 6px rgba(120,84,10,.3)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--gold);box-shadow:none}.btn.ghost:hover{background:var(--maroon2)}
+.btn.danger{background:#7a1f2b;color:#fff;border:1px solid #5a1520}
+.card{position:relative;background:var(--panel);border:1px solid var(--line);box-shadow:inset 0 1px 0 #fff,0 2px 10px rgba(90,64,10,.08)}
+.card::before{content:"";position:absolute;inset:4px;border:1px solid rgba(201,160,67,.32);border-radius:10px;pointer-events:none}
+.stat b{font:700 40px 'Cormorant Garamond',Georgia,serif;color:var(--pink2);text-shadow:none}
+.stat small{text-transform:uppercase;letter-spacing:.14em;font-size:10px}
+.bar i{background:linear-gradient(90deg,#e6c367,#b8892b);box-shadow:none}
+input,select,textarea{background:#fff;border:1px solid #d9c9a3;color:var(--ink)}input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,160,67,.25)}
+.board{counter-reset:c}.col{counter-increment:c;background:rgba(255,253,248,.72);border:1px solid var(--line);border-top:3px solid var(--gold)}
+.col.over{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,160,67,.3)}
+.col h3{font-size:19px;justify-content:flex-start;align-items:center}.col h3::before{content:counter(c,upper-roman) ".";color:var(--gold);margin-right:8px}.col h3 em{margin-left:auto;background:var(--maroon2);color:var(--pink2);border:1px solid var(--line);font:600 12px Inter,sans-serif}
+.tk{background:#fffefb;border:1px solid var(--line);border-left:4px solid var(--gold);box-shadow:0 1px 3px rgba(90,64,10,.12)}.tk:hover{border-color:var(--gold);transform:translateY(-1px)}
+.tk.High{border-left-color:#c9791a}.tk.Low{border-left-color:#c8bca4}.tk.Critical{border-left-color:#8c1d2f;box-shadow:0 0 0 1px rgba(140,29,47,.25)}
+.tk p{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;font-weight:700;line-height:1.2;color:var(--ink)}
+.tag{background:var(--maroon2);color:var(--pink2);border:1px solid var(--line);text-transform:uppercase;letter-spacing:.08em;font-size:10px}.tag.Critical{background:#8c1d2f;color:#fff;border-color:#8c1d2f}.tag.High{color:#8a4b00;background:#fdeccb}
+.mv:hover{color:var(--pink2);border-color:var(--gold)}
+.tbl th{text-transform:uppercase;letter-spacing:.1em;font-size:11px}
+.md,.ac{background:var(--noise),linear-gradient(160deg,#fffefb,#f8f0dd);border:1px solid var(--gold);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 4px #14100a,0 0 0 5px rgba(201,160,67,.55)}
+.md h2{font-size:28px}.cm{border-left:2px solid var(--gold);background:var(--panel2)}
+.tabs{background:#f1e8d2}.tabs .on{background:#fff;color:var(--ink);border:1px solid var(--gold)}
+.err{color:#b3261e}
+.toast{background:#14100a;color:#f1dfae;border:1px solid var(--gold);box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.sb{background:#f1e8d2;color:var(--mut);border-top:1px solid var(--line)}
+.dock{background:rgba(12,10,7,.92);border:1px solid #4a3a16}.dk{background:#1b1610;color:#e8d6a4;border:1px solid #4a3a16}.dk.on{border-color:var(--gold);box-shadow:0 0 12px rgba(201,160,67,.4)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ST=[['todo','To Do'],['prog','In Progress'],['done','Done']],PR=['Low','Medium','High','Critical'],TY=['Bug','Task','Story'],ROLES=['Admin','Manager','Developer'];
+const KEY='bugforge_db_v1',SK='bugforge_session';
+let db,me=null,view='board',pid=null,filt={q:'',st:'',pr:'',as:''},modal=null,mode='login',aerr='',dragId=null,minm=false,maxm=false,wp={};
+const uid=()=>Math.random().toString(36).slice(2,10);
+async function hash(p){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('bf:'+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa('bf:'+p)}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){toast('Storage is full. Remove a screenshot.')}}
+async function seed(){
+ const mk=async(n,e,p,r)=>({id:uid(),name:n,email:e,pw:await hash(p),role:r});
+ const a=await mk('Ava Admin','admin@demo.com','admin123','Admin'),m=await mk('Maya Manager','manager@demo.com','manager123','Manager'),d=await mk('Dev Patel','dev@demo.com','dev123','Developer');
+ const p={id:uid(),key:'PHX',name:'Phoenix Platform',desc:'Core platform rewrite',owner:m.id,members:[m.id,d.id],seq:1};
+ const iss=[['Login fails with special characters in password','Bug','Critical','prog',d.id],['Add dark mode toggle to settings','Story','Medium','todo',d.id],['Dashboard chart flickers on resize','Bug','High','todo',null],['Set up CI pipeline','Task','Low','done',m.id],['Upload screenshot is slow on mobile','Bug','Medium','prog',d.id]]
+ .map(x=>({id:uid(),pid:p.id,num:p.seq++,title:x[0],desc:'Steps to reproduce and notes go here.',type:x[1],pr:x[2],st:x[3],as:x[4],rep:m.id,shot:'',cm:[],at:Date.now()}));
+ db={users:[a,m,d],projects:[p],issues:iss};save();
+}
+async function load(){try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!db)await seed();
+ try{const s=localStorage.getItem(SK);if(s)me=db.users.find(u=>u.id===s)||null}catch(e){}
+ const ps=myProjects();pid=ps[0]?ps[0].id:null;render()}
+const usr=id=>db.users.find(u=>u.id===id);
+const ini=n=>String(n).split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const myProjects=()=>me?db.projects.filter(p=>me.role==='Admin'||p.members.includes(me.id)):[];
+const cur=()=>myProjects().find(p=>p.id===pid)||null;
+const isAdm=()=>me.role==='Admin',canMk=()=>me.role!=='Developer';
+const canMgr=p=>isAdm()||p.owner===me.id||(me.role==='Manager'&&p.members.includes(me.id));
+const canEd=(i,p)=>canMgr(p)||i.rep===me.id||i.as===me.id;
+const canDel=(i,p)=>canMgr(p)||i.rep===me.id;
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2300)}
+const av=id=>{const u=usr(id);return u?`<span class="av" title="${esc(u.name)}">${ini(u.name)}</span>`:'<span class="av" style="background:#e3d6b9;color:#7a6b57" title="Unassigned">?</span>'};
+function filtered(p){const q=filt.q.toLowerCase();return db.issues.filter(i=>i.pid===p.id&&(!q||(p.key+'-'+i.num+' '+i.title+' '+i.desc).toLowerCase().includes(q))&&(!filt.st||i.st===filt.st)&&(!filt.pr||i.pr===filt.pr)&&(!filt.as||(filt.as==='none'?!i.as:i.as===filt.as)))}
+function authHTML(){const reg=mode==='reg';
+ return`<div class="desk">${mbar()}<div class="auth"><form class="ac" data-form="auth"><div class="logo" style="padding:0;font-size:26px"><span>◆</span> BUGFORGE</div><p class="mut" style="margin:6px 0 0">Track bugs. Ship faster.</p>
+ <div class="tabs"><button type="button" data-act="mode" data-v="login" class="${reg?'':'on'}">Sign in</button><button type="button" data-act="mode" data-v="reg" class="${reg?'on':''}">Create account</button></div>
+ ${reg?'<div class="f"><label>Full name</label><input name="name" required></div>':''}
+ <div class="f"><label>Email</label><input name="email" type="email" required></div>
+ <div class="f"><label>Password</label><input name="pw" type="password" minlength="6" required></div>
+ ${reg?`<div class="f"><label>Role</label><select name="role">${ROLES.map(r=>`<option>${r}</option>`).join('')}</select></div>`:''}
+ <div class="err">${esc(aerr)}</div><button class="btn" style="width:100%">${reg?'Create account':'Sign in'}</button>
+ <div class="demo"><button type="button" class="btn ghost" data-act="demo" data-e="admin@demo.com" data-p="admin123">Admin</button><button type="button" class="btn ghost" data-act="demo" data-e="manager@demo.com" data-p="manager123">Manager</button><button type="button" class="btn ghost" data-act="demo" data-e="dev@demo.com" data-p="dev123">Developer</button></div>
+ <p class="mut" style="text-align:center;font-size:12px">Tap a role to try the demo instantly</p></form></div></div>`}
+const titles={dash:'Dashboard',board:'Kanban board',list:'All issues',team:'Team'};
+function shell(){const p=cur();
+ return`<div class="desk">${mbar()}<div class="win ${maxm?'mx':''}" ${minm?'hidden':''}><div class="tb"><span class="dots"><i class="r" data-act="logout" title="Sign out"></i><i class="y" data-act="minmain" title="Minimize"></i><i class="g" data-act="maxmain" title="Maximize"></i></span><span class="ttl">${p?esc(p.name):'BugForge'} — ${titles[view]}</span></div><div class="shell"><aside><div class="logo"><span>◆</span> BUGFORGE</div>
+ ${[['dash','▦','Dashboard'],['board','▥','Board'],['list','☰','Issues'],['team','◉','Team']].map(([k,i,l])=>`<button class="nv ${view===k?'on':''}" data-act="nav" data-v="${k}">${i} ${l}</button>`).join('')}
+ <div class="sec"><span>Projects</span>${canMk()?'<button class="mini" data-act="newproj" title="New project">+</button>':''}</div>
+ ${myProjects().map(x=>`<button class="pj ${p&&x.id===p.id?'on':''}" data-act="proj" data-id="${x.id}"><b>${esc(x.key)}</b> ${esc(x.name)}</button>`).join('')||'<p class="mut" style="margin:4px 8px">No projects yet</p>'}
+ <div class="me"><div class="av">${ini(me.name)}</div><div><b>${esc(me.name)}</b><small>${me.role}</small></div><button class="mini" data-act="logout" title="Log out">⏻</button></div></aside>
+ <main><header><div><h1>${titles[view]}</h1><p>${p?esc(p.name):'Create a project to begin'}</p></div>${p?'<button class="btn" data-act="newissue">+ New issue</button>':''}</header><section id="main">${mainHTML()}</section></main></div><div class="sb"><span>${p?db.issues.filter(i=>i.pid===p.id).length+' issues in '+esc(p.key):'No project selected'}</span><span>${esc(me.name)} · ${me.role}</span></div></div>${modal?modalHTML():''}<div class="dock"><button class="dk ${minm?'':'on'}" data-act="restore">◆ BugForge</button>${p?'<button class="dk" data-act="newissue">+ New issue</button>':''}</div></div>`}
+function mainHTML(){const p=cur();
+ if(!p)return`<div class="card empty"><h2>No project yet</h2><p>${canMk()?'Create your first project to start tracking issues.':'Ask a manager to add you to a project.'}</p>${canMk()?'<button class="btn" data-act="newproj">Create project</button>':''}</div>`;
+ if(view==='dash')return dash(p);if(view==='team')return team(p);
+ return`<div class="fb"><input id="fq" placeholder="Search issues…" value="${esc(filt.q)}">
+ <select data-f="st"><option value="">All status</option>${ST.map(s=>`<option value="${s[0]}" ${filt.st===s[0]?'selected':''}>${s[1]}</option>`).join('')}</select>
+ <select data-f="pr"><option value="">All priority</option>${PR.map(s=>`<option ${filt.pr===s?'selected':''}>${s}</option>`).join('')}</select>
+ <select data-f="as"><option value="">Anyone</option><option value="none" ${filt.as==='none'?'selected':''}>Unassigned</option>${p.members.map(m=>usr(m)).filter(Boolean).map(u=>`<option value="${u.id}" ${filt.as===u.id?'selected':''}>${esc(u.name)}</option>`).join('')}</select></div><div id="res">${res(p)}</div>`}
+function res(p){const l=filtered(p);return view==='list'?listH(p,l):boardH(p,l)}
+function card(i,p){return`<div class="tk ${i.pr}" draggable="true" data-id="${i.id}" data-act="open"><div class="row"><small>${esc(p.key)}-${i.num} · ${i.type}</small><span class="tag ${i.pr}">${i.pr}</span></div><p>${esc(i.title)}</p><div class="row"><span>${av(i.as)} <small>${i.cm.length?'💬 '+i.cm.length:''}</small></span><span><button class="mv" data-act="mv" data-id="${i.id}" data-d="-1" title="Move back">‹</button> <button class="mv" data-act="mv" data-id="${i.id}" data-d="1" title="Move forward">›</button></span></div></div>`}
+function boardH(p,l){return`<div class="board">${ST.map(([k,n])=>{const c=l.filter(i=>i.st===k);return`<div class="col" data-col="${k}"><h3>${n} <em>${c.length}</em></h3>${c.map(i=>card(i,p)).join('')||'<p class="mut" style="text-align:center">Drop issues here</p>'}</div>`}).join('')}</div>`}
+function listH(p,l){return l.length?`<div class="card wrap"><table class="tbl"><tr><th>Key</th><th>Title</th><th>Type</th><th>Priority</th><th>Status</th><th>Assignee</th></tr>${l.map(i=>`<tr data-act="open" data-id="${i.id}"><td>${esc(p.key)}-${i.num}</td><td>${esc(i.title)}</td><td>${i.type}</td><td><span class="tag ${i.pr}">${i.pr}</span></td><td>${ST.find(s=>s[0]===i.st)[1]}</td><td>${av(i.as)}</td></tr>`).join('')}</table></div>`:'<div class="card empty">No issues match these filters.</div>'}
+function dash(p){const l=db.issues.filter(i=>i.pid===p.id),n=k=>l.filter(i=>i.st===k).length,mx=Math.max(1,...PR.map(r=>l.filter(i=>i.pr===r).length));
+ return`<div class="stats">${[['Total',l.length],['To Do',n('todo')],['In Progress',n('prog')],['Done',n('done')],['Assigned to me',l.filter(i=>i.as===me.id&&i.st!=='done').length]].map(s=>`<div class="card stat"><small>${s[0]}</small><b>${s[1]}</b></div>`).join('')}</div>
+ <div class="two"><div class="card"><h3>Issues by priority</h3>${PR.map(r=>{const c=l.filter(i=>i.pr===r).length;return`<div class="bar"><span>${r}</span><i style="width:${c/mx*100}%;min-width:6px"></i><small>${c}</small></div>`}).join('')}</div>
+ <div class="card"><h3 style="margin-bottom:8px">Recent issues</h3>${l.slice().sort((a,b)=>b.at-a.at).slice(0,5).map(i=>`<div class="row" style="padding:7px 0;cursor:pointer" data-act="open" data-id="${i.id}"><span>${esc(i.title)}</span><span class="tag ${i.pr}">${i.pr}</span></div>`).join('')||'<p class="mut">Nothing yet</p>'}</div></div>`}
+function team(p){const m=canMgr(p),out=db.users.filter(u=>!p.members.includes(u.id));
+ return`<div class="card"><h3>${esc(p.name)} <small>(${esc(p.key)})</small></h3><p class="mut">${esc(p.desc)}</p>
+ ${p.members.map(usr).filter(Boolean).map(u=>`<div class="row" style="padding:9px 0;border-bottom:1px solid var(--line)"><span class="row" style="justify-content:flex-start">${av(u.id)}<span><b>${esc(u.name)}</b><br><small>${esc(u.email)}</small></span></span><span class="row"><span class="tag">${u.role}</span>${m&&u.id!==p.owner?`<button class="btn ghost" data-act="rmm" data-id="${u.id}">Remove</button>`:''}</span></div>`).join('')}
+ ${m?`<form data-form="addm" class="row" style="margin-top:14px"><select name="u" required><option value="">Add a member…</option>${out.map(u=>`<option value="${u.id}">${esc(u.name)} (${u.role})</option>`).join('')}</select><button class="btn">Add</button></form>
+ <div class="acts"><button class="btn danger" data-act="delproj">${modal&&modal.dp?'Click again to delete project':'Delete project'}</button></div>`:'<p class="mut" style="margin-top:12px">Only admins and managers can change the team.</p>'}</div>`}
+function modalHTML(){
+ if(modal.t==='proj')return`<div class="ov"><form class="md" data-form="proj"><h2>New project</h2><div class="g"><div class="f"><label>Name</label><input name="name" required></div><div class="f"><label>Key (3–5 letters)</label><input name="key" maxlength="5" minlength="2" required></div></div><div class="f"><label>Description</label><textarea name="desc" rows="3"></textarea></div><div class="acts"><button type="button" class="btn ghost" data-act="close">Cancel</button><button class="btn">Create project</button></div></form></div>`;
+ const p=cur(),i=modal.id?db.issues.find(x=>x.id===modal.id):null,ro=i&&!canEd(i,p),d=ro?'disabled':'';
+ const v=i||{title:'',desc:'',type:'Bug',pr:'Medium',st:modal.st||'todo',as:null,shot:'',cm:[]};
+ const o=(a,s)=>a.map(x=>`<option ${x===s?'selected':''}>${x}</option>`).join('');
+ return`<div class="ov"><div class="md"><h2>${i?esc(p.key)+'-'+i.num:'New issue'}</h2><form data-form="issue"><div class="f"><label>Title</label><input name="title" required value="${esc(v.title)}" ${d}></div>
+ <div class="f"><label>Description</label><textarea name="desc" rows="3" ${d}>${esc(v.desc)}</textarea></div>
+ <div class="g"><div class="f"><label>Type</label><select name="type" ${d}>${o(TY,v.type)}</select></div><div class="f"><label>Priority</label><select name="pr" ${d}>${o(PR,v.pr)}</select></div>
+ <div class="f"><label>Status</label><select name="st" ${d}>${ST.map(s=>`<option value="${s[0]}" ${s[0]===v.st?'selected':''}>${s[1]}</option>`).join('')}</select></div>
+ <div class="f"><label>Assignee</label><select name="as" ${d}><option value="">Unassigned</option>${p.members.map(usr).filter(Boolean).map(u=>`<option value="${u.id}" ${u.id===v.as?'selected':''}>${esc(u.name)}</option>`).join('')}</select></div></div>
+ <div class="f"><label>Screenshot (optional)</label>${ro?'':'<input type="file" id="shotf" accept="image/*">'}<div id="shotprev">${v.shot?`<img class="shot" src="${v.shot}" alt="Screenshot">`:''}</div></div>
+ <div class="acts"><button type="button" class="btn ghost" data-act="close">${ro?'Close':'Cancel'}</button>${i&&canDel(i,p)?`<button type="button" class="btn danger" data-act="delissue">${modal.dc?'Click again to delete':'Delete'}</button>`:''}${ro?'':`<button class="btn">${i?'Save changes':'Create issue'}</button>`}</div></form>
+ ${i?`<h3 style="margin-top:18px">Comments (${i.cm.length})</h3>${i.cm.map(c=>`<div class="cm"><small><b>${esc((usr(c.by)||{name:'Former user'}).name)}</b> · ${new Date(c.at).toLocaleString()}</small><div>${esc(c.tx)}</div></div>`).join('')||'<p class="mut">No comments yet.</p>'}<form data-form="cmt" class="row" style="margin-top:10px"><input name="tx" placeholder="Write a comment…" required><button class="btn">Post</button></form>`:''}</div></div>`}
+function render(){const a=$('#app');a.innerHTML=me?shell():authHTML();deco()}
+function openModal(m){modal=m;wp.md=null;render()}
+function mbar(){return'<div class="mbar"><b style="color:var(--pink)">◆ BugForge</b><span>Issue Tracker</span><span style="margin-left:auto" id="clk"></span></div>'}
+function tick(){const c=$('#clk');if(c)c.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+function deco(){document.querySelectorAll('.md,.ac').forEach(w=>{const h=w.querySelector('h2'),ac=w.classList.contains('ac');w.insertAdjacentHTML('afterbegin',`<div class="tb"><span class="dots"><i class="r" ${ac?'':'data-act="close"'} title="Close"></i><i class="y"></i><i class="g"></i></span><span class="ttl">${ac?'Sign in to BugForge':esc(h?h.textContent:'Window')}</span></div>`)});
+ document.querySelectorAll('.win,.md,.ac').forEach(w=>{const k=w.classList.contains('win')?'main':w.classList.contains('md')?'md':'ac',s=wp[k];w.style.transform=s&&!w.classList.contains('mx')?`translate(${s.x}px,${s.y}px)`:''});tick()}
+document.addEventListener('pointerdown',ev=>{const tb=ev.target.closest&&ev.target.closest('.tb');if(!tb||ev.target.closest('[data-act]')||innerWidth<821)return;const w=tb.parentElement,k=w.classList.contains('win')?'main':w.classList.contains('md')?'md':'ac',s=wp[k]||(wp[k]={x:0,y:0}),sx=ev.clientX-s.x,sy=ev.clientY-s.y;
+ const mv=e=>{s.x=e.clientX-sx;s.y=e.clientY-sy;w.style.transform=`translate(${s.x}px,${s.y}px)`},up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up)};addEventListener('pointermove',mv);addEventListener('pointerup',up);ev.preventDefault()});
+setInterval(tick,30000);
+async function login(e,p){const u=db.users.find(x=>x.email.toLowerCase()===e.toLowerCase().trim());if(!u||u.pw!==await hash(p)){aerr='Email or password is incorrect.';render();return}
+ me=u;aerr='';try{localStorage.setItem(SK,u.id)}catch(x){}const ps=myProjects();pid=ps[0]?ps[0].id:null;view='board';render();toast('Welcome back, '+u.name.split(' ')[0])}
+document.addEventListener('submit',async ev=>{const f=ev.target.dataset.form;if(!f)return;ev.preventDefault();const d=Object.fromEntries(new FormData(ev.target)),p=me&&cur();
+ if(f==='auth'){if(mode==='login')return login(d.email,d.pw);
+  if(db.users.some(u=>u.email.toLowerCase()===d.email.toLowerCase().trim())){aerr='That email is already registered.';return render()}
+  const u={id:uid(),name:d.name.trim(),email:d.email.trim(),pw:await hash(d.pw),role:d.role};db.users.push(u);save();return login(u.email,d.pw)}
+ if(f==='proj'){const k=d.key.toUpperCase().replace(/[^A-Z]/g,'');if(k.length<2)return toast('Key needs at least 2 letters');if(db.projects.some(x=>x.key===k))return toast('That key is already used');
+  const np={id:uid(),key:k,name:d.name.trim(),desc:d.desc,owner:me.id,members:[me.id],seq:1};db.projects.push(np);save();pid=np.id;modal=null;render();return toast('Project created')}
+ if(f==='addm'){if(!d.u)return;p.members.push(d.u);save();render();return toast('Member added')}
+ if(f==='cmt'){const i=db.issues.find(x=>x.id===modal.id);i.cm.push({by:me.id,tx:d.tx.trim(),at:Date.now()});save();render();return toast('Comment posted')}
+ if(f==='issue'){const o={title:d.title.trim(),desc:d.desc,type:d.type,pr:d.pr,st:d.st,as:d.as||null};const sp=$('#shotprev img');o.shot=sp?sp.src:'';
+  if(modal.id){Object.assign(db.issues.find(x=>x.id===modal.id),o);toast('Changes saved')}else{db.issues.push({id:uid(),pid:p.id,num:p.seq++,rep:me.id,cm:[],at:Date.now(),...o});toast('Issue created')}
+  save();modal=null;render()}});
+document.addEventListener('click',ev=>{const t=ev.target.closest('[data-act]');if(!t)return;const a=t.dataset.act,id=t.dataset.id,p=me&&cur();
+ if(a==='open'&&ev.target.closest('.mv'))return;
+ if(a==='mode'){mode=t.dataset.v;aerr='';render()}
+ else if(a==='demo')login(t.dataset.e,t.dataset.p);
+ else if(a==='minmain'){minm=true;render()}
+ else if(a==='restore'){minm=false;render()}
+ else if(a==='maxmain'){maxm=!maxm;render()}
+ else if(a==='logout'){me=null;modal=null;minm=false;try{localStorage.removeItem(SK)}catch(e){}render()}
+ else if(a==='nav'){view=t.dataset.v;render()}
+ else if(a==='proj'){pid=id;filt={q:'',st:'',pr:'',as:''};render()}
+ else if(a==='newproj')openModal({t:'proj'});
+ else if(a==='newissue')openModal({t:'issue'});
+ else if(a==='open')openModal({t:'issue',id});
+ else if(a==='close'){modal=null;render()}
+ else if(a==='mv'){const i=db.issues.find(x=>x.id===id);if(!canEd(i,p))return toast('You can only move your own or assigned issues');const k=ST.map(s=>s[0]),n=k.indexOf(i.st)+ +t.dataset.d;if(n<0||n>2)return;i.st=k[n];save();render()}
+ else if(a==='rmm'){p.members=p.members.filter(m=>m!==id);db.issues.forEach(i=>{if(i.pid===p.id&&i.as===id)i.as=null});save();render();toast('Member removed')}
+ else if(a==='delissue'){if(!modal.dc){modal.dc=1;return render()}db.issues=db.issues.filter(x=>x.id!==modal.id);save();modal=null;render();toast('Issue deleted')}
+ else if(a==='delproj'){if(!modal||!modal.dp){modal={dp:1,t:'none'};render();return}db.issues=db.issues.filter(x=>x.pid!==p.id);db.projects=db.projects.filter(x=>x.id!==p.id);save();modal=null;const ps=myProjects();pid=ps[0]?ps[0].id:null;view='board';render();toast('Project deleted')}});
+document.addEventListener('input',ev=>{if(ev.target.id==='fq'){filt.q=ev.target.value;$('#res').innerHTML=res(cur())}});
+document.addEventListener('change',ev=>{const t=ev.target;
+ if(t.dataset.f){filt[t.dataset.f]=t.value;$('#res').innerHTML=res(cur())}
+ if(t.id==='shotf'&&t.files[0]){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,720/im.width),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);$('#shotprev').innerHTML=`<img class="shot" src="${c.toDataURL('image/jpeg',.7)}" alt="Screenshot">`};im.src=r.result};r.readAsDataURL(t.files[0])}});
+document.addEventListener('dragstart',ev=>{const t=ev.target.closest&&ev.target.closest('.tk');if(t){dragId=t.dataset.id;ev.dataTransfer.setData('text/plain',dragId)}});
+document.addEventListener('dragover',ev=>{const c=ev.target.closest&&ev.target.closest('.col');if(c&&dragId){ev.preventDefault();document.querySelectorAll('.col.over').forEach(x=>x!==c&&x.classList.remove('over'));c.classList.add('over')}});
+document.addEventListener('drop',ev=>{const c=ev.target.closest&&ev.target.closest('.col');if(!c||!dragId)return;ev.preventDefault();const i=db.issues.find(x=>x.id===dragId);dragId=null;
+ if(!canEd(i,cur()))return render(),toast('You can only move your own or assigned issues');i.st=c.dataset.col;save();render();toast('Moved to '+ST.find(s=>s[0]===i.st)[1])});
+document.addEventListener('dragend',()=>{dragId=null;document.querySelectorAll('.col.over').forEach(x=>x.classList.remove('over'))});
+load();
+</script>
+</body>
+</html>
